@@ -53,9 +53,10 @@
        提交修改和提交新文件一样是两步
 	   1）、git add file.txt
 	   2）、git commit -m "what is the change."
-           第一步是用git add把文件添加进去，实际上就是把文件修改添加到暂存区；
+           第一步是用git add把文件添加进去，实际上就是把工作区文件修改添加到暂存区；
 		   第二步是用git commit提交更改，实际上就是把暂存区的所有内容提交到当前分支。
-  
+       3）、用git diff HEAD -- file.txt命令可以查看工作区和版本库里面最新版本的区别：
+	         $git diff HEAD -- file.txt
   4.4 把文件改乱了，或者误删了文件，还可以从最近的一个commit恢复，然后继续工作，而不是把几个月的工作成果全部丢失。
       1）、git log 命令显示从最近到最远的提交日志。从中找到我们要退回的commit id（一大串类似3628164...882e1e0的是commit id）
       2）、明确在Git中，用HEAD表示当前版本，也就是最新的提交3628164...882e1e0（注意我的提交ID和你的肯定不一样），上一个版本就是HEAD^，
@@ -73,7 +74,14 @@
 				d03dd9e HEAD@{2}: reset: moving to HEAD^
 				e5bed3c HEAD@{3}: commit: go back test
 				d03dd9e HEAD@{4}: commit: how to get back
-		   
-  
 
-	
+5、撤销修改				
+  5.1 当你改乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令git checkout -- file，
+      git checkout -- file命令中的--很重要，没有--，就变成了“切换到另一个分支”的命令
+  5.2 命令git checkout -- file意思是，把file文件在工作区的修改全部撤销，这里有两种情况：
+	 1）file自修改以后还没有git add，即修改没有被放到暂存区，现在撤销修改就回到和版本库一样的状态
+	 2）file修改以后git add过了，又作了修改，现在撤销修改就回到添加到暂存区的状态。
+  
+  5.3 当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，
+     第一步用命令git reset HEAD file可以把暂存区的修改撤销（unstage），重新放回工作区。
+	 第二步用命令git checkout -- file
