@@ -53,6 +53,7 @@
        提交修改和提交新文件一样是两步
 	   1）、git add file.txt
 	   2）、git commit -m "what is the change."
+  备注：git help可以参看帮助
 
   
 
