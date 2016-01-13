@@ -54,6 +54,9 @@
 	   1）、git add file.txt
 	   2）、git commit -m "what is the change."
   备注：git help可以参看帮助
+  
+  4.4 把文件改乱了，或者误删了文件，还可以从最近的一个commit恢复，然后继续工作，而不是把几个月的工作成果全部丢失。
+      git log 命令显示从最近到最远的提交日志。
 
   
 
