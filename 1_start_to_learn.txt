@@ -9,7 +9,7 @@
 删除，Git都可以跟踪，以便任何时刻都可以跟踪历史，或者在将来某个时刻可以“还原”
   
 备注：默认读者已经安装了git软件
-  
+      git help可以参看帮助 
 1、创建一个空目录
   $mkdir git_study
   $cd git_study
@@ -53,7 +53,8 @@
        提交修改和提交新文件一样是两步
 	   1）、git add file.txt
 	   2）、git commit -m "what is the change."
-  备注：git help可以参看帮助
+           第一步是用git add把文件添加进去，实际上就是把文件修改添加到暂存区；
+		   第二步是用git commit提交更改，实际上就是把暂存区的所有内容提交到当前分支。
   
   4.4 把文件改乱了，或者误删了文件，还可以从最近的一个commit恢复，然后继续工作，而不是把几个月的工作成果全部丢失。
       1）、git log 命令显示从最近到最远的提交日志。从中找到我们要退回的commit id（一大串类似3628164...882e1e0的是commit id）
@@ -61,6 +62,18 @@
 	       上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。
 	  3）、使用git reset命令：
 	       $git reset --hard HEAD^
+      4）、然后我们用git log 查看现在版本库的状态，注意到之前最新的那个commit id不见了。
+	       如果我们记得“未来”的那个版本的commit_id，想回到“未来”的那个版本，可以使用以下命令：
+		   $git reset --hard commit_id
+		   备注：版本号没必要写全，前几位就可以了，Git会自动去找。当然也不能只写前一两位，因为Git可能会找到多个版本号，就无法确定是哪一个了。
+	  5）、如果我们不记得commit_id，可以使用git reflog来查看记录你的每一次命令，这样就可以找回那个commit_id:
+	       $git reflog
+				d03dd9e HEAD@{0}: reset: moving to HEAD^
+				e5bed3c HEAD@{1}: reset: moving to e5bed3ca
+				d03dd9e HEAD@{2}: reset: moving to HEAD^
+				e5bed3c HEAD@{3}: commit: go back test
+				d03dd9e HEAD@{4}: commit: how to get back
+		   
   
 
 	
