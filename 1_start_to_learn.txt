@@ -45,7 +45,14 @@
 3.3 用git commit告诉Git，把文件提交到仓库
   $git commit -m "create a file"
   git commit命令，-m后面输入的是本次提交的说明，可以输入任意内容，当然最好是有意义的，这样你就能从历史记录里方便地找到改动记录。
-
+  
+4、版本回退
+  4.1 git status 命令可以了解仓库当前的状态
+  4.2 当用git status 命令直到仓库中有文件被修改的时候，git diff fileName 可以让我们知道某个文件被修改的具体内容。
+  4.3 了解文件被修改了哪些内容后，确定没有问题了，就可以提交修改。
+       提交修改和提交新文件一样是两步
+	   1）、git add file.txt
+	   2）、git commit -m "what is the change."
 
   
 
