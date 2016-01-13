@@ -85,3 +85,13 @@
   5.3 当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改，分两步，
      第一步用命令git reset HEAD file可以把暂存区的修改撤销（unstage），重新放回工作区。
 	 第二步用命令git checkout -- file
+
+6、删除文件
+  一般情况下，你通常直接在文件管理器中把没用的文件删了，或者用rm命令删了：
+  这个时候，Git知道你删除了文件，因此，工作区和版本库就不一致了，git status命令会立刻告诉你哪些文件被删除了：
+  现在你有两个选择：
+  1）确实要从版本库中删除该文件，那就用命令git rm删掉，并且git commit：
+	$ git rm file.txt
+	$ git commit -m "remove file.txt"
+  2) 删错了，因为版本库里还有呢，所以可以很轻松地把误删的文件恢复到最新版本：
+     $ git checkout -- file.txt
