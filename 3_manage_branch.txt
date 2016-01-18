@@ -24,3 +24,14 @@
   3）删除分支dev
       $git branch -d dev
   因为创建、合并和删除分支非常快，所以Git鼓励你使用分支完成某个任务，合并后再删掉分支，这和直接在master分支上工作效果是一样的，但过程更安全。
+
+
+
+3、冲突
+  1）创建分支conflict：
+      $git branch conflict
+	  $git checkout conflict
+	  //修改文件并且完成提交
+  2）在conflict分支上工作完成以后切回到master分支，修改文件并且完成提交
+  3）把conflict分支合并到master上：
+    $git merge conflict
