@@ -32,3 +32,110 @@
   如果要强制禁用Fast forward模式，Git就会在merge时生成一个新的commit，这样，从分支历史上就可以看出分支信息。
   合并后，我们用git log看看分支历史：
     $ git log --graph --pretty=oneline --abbrev-commit
+	
+4、bug分支（feature分支类似）
+  如果当前在dev分支上进行工作还没有提交，又要去修复一个bug的时候，怎么办？
+  Git还提供了一个stash功能，可以把当前工作现场“储藏”起来，等以后恢复现场后继续工作：
+    $git stash
+  现在，用git status查看工作区，就是干净的（除非有没有被Git管理的文件），因此可以放心地创建分支来修复bug。
+  首先确定要在哪个分支上修复bug，假定需要在master分支上修复，就从master创建临时分支：
+    $git checkout master
+	$git checkout -b bug_branch
+	... ...
+	$git add ...
+	$git commit -m "fixed bug"
+  修复完成后，切换到master分支，并完成合并，最后删除bug分支：
+    $git checkout master
+	$git merge --no-ff -m "merged bug fix number 110"
+	$git branch -d bug_branch
+  现在，是时候接着回到dev分支干活了！
+    $git checkout dev
+  用git stash list命令看看:
+  工作现场还在，Git把stash内容存在某个地方了，但是需要恢复一下，有两个办法：
+	1）用git stash apply恢复，但是恢复后，stash内容并不删除，你需要用git stash drop来删除；
+    2）用git stash pop，恢复的同时把stash内容也删了
+  可以多次stash，恢复的时候，先用git stash list查看，然后恢复指定的stash，用命令：
+    $ git stash apply stash@{0}
+	
+	???:如果修改bug的时候，修改了一些文件，刚好我在dev分支上也做了修改最后merge的时候还是会有冲突的。
+	
+	
+	
+5、多人协作
+  当你从远程仓库克隆时，实际上Git自动把本地的master分支和远程的master分支对应起来了，并且，远程仓库的默认名称是origin。
+  用git remote -v显示详细的信息：
+  
+  显示可以抓取和推送的origin的地址。如果没有推送权限，就看不到push的地址。
+  1）推送分支
+	并不是一定要把本地分支往远程推送，那么，哪些分支需要推送，哪些不需要呢？
+
+	master分支是主分支，因此要时刻与远程同步；
+
+	dev分支是开发分支，团队所有成员都需要在上面工作，所以也需要与远程同步；
+
+	bug分支只用于在本地修复bug，就没必要推到远程了，除非老板要看看你每周到底修复了几个bug；
+
+	feature分支是否推到远程，取决于你是否和你的小伙伴合作在上面开发。
+  2）抓取分支
+    首先，从远程版本库克隆一份
+	  $ git clone git@github.com:mufeng134/learngit.git
+	只能看到本地的master分支,可以用git branch命令看看：
+	现在，自己要在dev分支上开发，就必须创建远程origin的dev分支到本地，用这个命令创建本地dev分支：
+	  $ git checkout -b dev origin/dev
+	现在，就可以在dev上继续修改，然后，时不时地把dev分支push到远程：
+	
+  3）如果有同伴已经向origin/dev分支推送了他的提交，而碰巧你也对同样的文件作了修改，并试图推送：
+     推送失败，因为你的小伙伴的最新提交和你试图推送的提交有冲突，解决办法也很简单，Git已经提示我们，
+	 先用git pull把最新的提交从origin/dev抓下来，然后，在本地合并，解决冲突，再推送：
+	 
+	 指定本地dev分支与远程origin/dev分支的链接，根据提示，设置dev和origin/dev的链接：
+	   $git branch --set-upstream dev origin/dev
+/*************************************************************************************************/  
+/*************************************************************************************************/  
+/*************************************************************************************************/  
+  git push命令用于将本地分支的更新，推送到远程主机。它的格式与git pull命令相仿。
+	$ git push <远程主机名> <本地分支名>:<远程分支名>
+	注意，分支推送顺序的写法是<来源地>:<目的地>，所以git pull是<远程分支>:<本地分支>，而git push是<本地分支>:<远程分支>。
+
+	如果省略远程分支名，则表示将本地分支推送与之存在”追踪关系”的远程分支(通常两者同名)，如果该远程分支不存在，则会被新建。
+
+	$ git push origin master
+	上面命令表示，将本地的master分支推送到origin主机的master分支。如果后者不存在，则会被新建。
+
+	如果省略本地分支名，则表示删除指定的远程分支，因为这等同于推送一个空的本地分支到远程分支。
+
+	$ git push origin :master
+	# 等同于
+	$ git push origin --delete master
+	上面命令表示删除origin主机的master分支。
+
+	如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略。
+
+	$ git push origin
+	上面命令表示，将当前分支推送到origin主机的对应分支。
+
+	如果当前分支只有一个追踪分支，那么主机名都可以省略。
+
+	$ git push
+	如果当前分支与多个主机存在追踪关系，则可以使用-u选项指定一个默认主机，这样后面就可以不加任何参数使用git push。
+
+	$ git push -u origin master
+	上面命令将本地的master分支推送到origin主机，同时指定origin为默认主机，后面就可以不加任何参数使用git push了。
+
+	不带任何参数的git push，默认只推送当前分支，这叫做simple方式。此外，还有一种matching方式，
+	会推送所有有对应的远程分支的本地分支。Git 2.0版本之前，默认采用matching方法，现在改为默认采用simple方式。
+	如果要修改这个设置，可以采用git config命令。
+
+	$ git config --global push.default matching
+	# 或者
+	$ git config --global push.default simple
+	还有一种情况，就是不管是否存在对应的远程分支，将本地的所有分支都推送到远程主机，这时需要使用–all选项。
+
+	$ git push --all origin
+	上面命令表示，将所有本地分支都推送到origin主机。
+
+	如果远程主机的版本比本地版本更新，推送时Git会报错，要求先在本地做git pull合并差异，然后再推送到远程主机。
+	这时，如果你一定要推送，可以使用–force选项。
+/**************************************************************/
+/**************************************************************/
+/**************************************************************/
